@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
-public class IUArrayList<T> implements IndexedUnsortedList<T>{
+public class IUArrayList<T> implements IndexedUnsortedList<T> {
     private T[] array;
     private int rear;
     private int modCount;
@@ -15,18 +15,19 @@ public class IUArrayList<T> implements IndexedUnsortedList<T>{
      * Initialize list with default capacity.
      */
     public IUArrayList() {
-        // array = (T[])(new Object[DEFAULT_CAPACITY]);   
+        // array = (T[])(new Object[DEFAULT_CAPACITY]);
         // rear = 0;
         this(DEFAULT_CAPACITY);
     }
 
     /**
      * Initialize list with given capacity.
+     * 
      * @param intitalCapacity
      */
-    @SuppressWarnings (value = "unchecked")
-    public IUArrayList(int intitalCapacity){
-        array = (T[])(new Object[intitalCapacity]);
+    @SuppressWarnings(value = "unchecked")
+    public IUArrayList(int intitalCapacity) {
+        array = (T[]) (new Object[intitalCapacity]);
         rear = 0;
         modCount = 0;
     }
@@ -34,17 +35,17 @@ public class IUArrayList<T> implements IndexedUnsortedList<T>{
     /**
      * Doubles the array capacity if there is no more room to add elements.
      */
-    private void expandIfNecessary(){
+    private void expandIfNecessary() {
         if (rear >= array.length) {
-            array = Arrays.copyOf(array, array.length*2);
+            array = Arrays.copyOf(array, array.length * 2);
         }
     }
-     
+
     @Override
     public void addToFront(T element) {
         expandIfNecessary();
-        for (int i = rear; i > 0; i--) { //"shift loop"
-            array[i] = array[i-1];
+        for (int i = rear; i > 0; i--) { // "shift loop"
+            array[i] = array[i - 1];
         }
         array[0] = element;
         rear++;
@@ -66,29 +67,31 @@ public class IUArrayList<T> implements IndexedUnsortedList<T>{
 
     @Override
     public void addAfter(T element, T target) {
-        //check if it contatins, expand, Get the index of the target val, incriment to the right of that val, add new value, increment rear
+        // check if it contatins, expand, Get the index of the target val, incriment to
+        // the right of that val, add new value, increment rear
         if (!contains(target)) {
             throw new NoSuchElementException();
         }
         expandIfNecessary();
         int targetIndex = indexOf(target);
-        for (int i = rear; i > targetIndex+1; i--) {
-            array[i] = array[i-1];
+        for (int i = rear; i > targetIndex + 1; i--) {
+            array[i] = array[i - 1];
         }
-        array[targetIndex+1] = element;
+        array[targetIndex + 1] = element;
         rear++;
         modCount++;
     }
 
     @Override
     public void add(int index, T element) {
-        //increment everything from index to the right over 1, use set to 'add' the element at given index
+        // increment everything from index to the right over 1, use set to 'add' the
+        // element at given index
         if (index < 0 || index > rear) {
             throw new IndexOutOfBoundsException();
         }
         expandIfNecessary();
         for (int i = rear; i > index; i--) {
-            array[i] = array[i-1];
+            array[i] = array[i - 1];
         }
         array[index] = element;
         rear++;
@@ -97,12 +100,12 @@ public class IUArrayList<T> implements IndexedUnsortedList<T>{
 
     @Override
     public T removeFirst() {
-        if (isEmpty()){
+        if (isEmpty()) {
             throw new NoSuchElementException();
         }
         T retVal = array[0];
-        for (int i = 0; i < rear-1; i++) {
-            array[i] = array[i+1];
+        for (int i = 0; i < rear - 1; i++) {
+            array[i] = array[i + 1];
         }
         rear--;
         array[rear] = null;
@@ -117,7 +120,7 @@ public class IUArrayList<T> implements IndexedUnsortedList<T>{
         }
         T retVal = array[rear - 1]; // store return value
         array[rear - 1] = null; // remove the last value
-        rear--; //decriment rear
+        rear--; // decriment rear
         modCount++;
         return retVal;
     }
@@ -139,9 +142,9 @@ public class IUArrayList<T> implements IndexedUnsortedList<T>{
             throw new IndexOutOfBoundsException();
         }
         T retVal = array[index]; // for safe keeping
-        //now we shift
-        for (int i = index; i < rear-1; i++) {
-            array[i] = array[i+1];
+        // now we shift
+        for (int i = index; i < rear - 1; i++) {
+            array[i] = array[i + 1];
         }
         rear--;
         array[rear] = null;
@@ -211,24 +214,24 @@ public class IUArrayList<T> implements IndexedUnsortedList<T>{
         return rear;
     }
 
-    @Override 
+    @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
         str.append("[");
         // for (int i = 0; i < rear; i++) {
-        //     str.append(array[i].toString());
-        //     str.append(", ");
+        // str.append(array[i].toString());
+        // str.append(", ");
         // }
         for (T element : this) {
             str.append(element.toString());
             str.append(", ");
         }
         if (!isEmpty()) {
-            str.delete(str.length()-2, str.length());
+            str.delete(str.length() - 2, str.length());
         }
         str.append("]");
         return str.toString();
-        
+
     }
 
     @Override
@@ -246,23 +249,23 @@ public class IUArrayList<T> implements IndexedUnsortedList<T>{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'listIterator'");
     }
-    
-    /** Basic iterator class for IUArrayList  */
+
+    /** Basic iterator class for IUArrayList */
     private class ALIterator implements Iterator<T> {
         private int nextIndex;
         private boolean canRemove;
         private int iterModCount;
 
         /** Initialize iterator before first element. */
-        public ALIterator(){
-            nextIndex=0;
+        public ALIterator() {
+            nextIndex = 0;
             canRemove = false;
             iterModCount = modCount;
         }
 
         @Override
         public boolean hasNext() {
-            if (iterModCount != modCount) { //Something happened
+            if (iterModCount != modCount) { // Something happened
                 throw new ConcurrentModificationException();
             }
             return nextIndex < rear;
@@ -274,33 +277,32 @@ public class IUArrayList<T> implements IndexedUnsortedList<T>{
                 throw new NoSuchElementException();
             }
             canRemove = true;
-            //T retVal = array[nextIndex];
+            // T retVal = array[nextIndex];
             nextIndex++;
-            //return retVal;
+            // return retVal;
             return array[nextIndex - 1];
         }
 
         @Override
         public void remove() {
-            if (iterModCount != modCount) { //Something happened
+            if (iterModCount != modCount) { // Something happened
                 throw new ConcurrentModificationException();
             }
-            if (!canRemove){
+            if (!canRemove) {
                 throw new IllegalStateException();
             }
-            canRemove = false; //Will not be allowed to remove last element twice
-            for (int i = nextIndex-1; i < rear-1; i++) {
-                array[i] = array[i+1];
+            canRemove = false; // Will not be allowed to remove last element twice
+            for (int i = nextIndex - 1; i < rear - 1; i++) {
+                array[i] = array[i + 1];
             }
-            array[rear-1] = null;
+            array[rear - 1] = null;
             rear--;
             nextIndex--;
-            modCount++; //The list got changed
-            iterModCount++; //ONLY THIS iterator knows
+            modCount++; // The list got changed
+            iterModCount++; // ONLY THIS iterator knows
 
         }
 
     }
 
-} //End of IUArrayList
-
+} // End of IUArrayList
